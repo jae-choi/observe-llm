@@ -1,0 +1,10 @@
+langchain-google-genai
+langgraph
+python-dotenv
+langchain
+langsmith
+langfuse
+fastapi
+uvicorn
+python-multipart
+mistune

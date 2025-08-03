@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangGraph, LangSmith, Langfuse 비교</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+        .card {
+            background-color: #1F2937;
+            border: 1px solid #374151;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        .tag-blue {
+            background-color: #1E40AF;
+            color: #DBEAFE;
+        }
+        .tag-green {
+            background-color: #065F46;
+            color: #D1FAE5;
+        }
+        .tag-purple {
+            background-color: #5B21B6;
+            color: #EDE9FE;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #4F46E5, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        th, td {
+            border: 1px solid #374151;
+            padding: 1rem;
+            text-align: left;
+        }
+        th {
+            background-color: #374151;
+            color: #F3F4F6;
+        }
+        td {
+            background-color: #1F2937;
+        }
+        .icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <!-- Header -->
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">
+                <span class="gradient-text">LLM 애플리케이션 개발 가이드</span>
+            </h1>
+            <p class="text-lg text-gray-400">LangGraph, LangSmith, Langfuse 완벽 비교 분석</p>
+        </header>
+
+        <main class="space-y-12">
+            <!-- LangGraph Section -->
+            <section id="langgraph">
+                <div class="card">
+                    <div class="flex items-center mb-4">
+                         <svg class="icon text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.94 17.94A10.07 10.07 0 0112 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8a10.07 10.07 0 01-2.06 6.06L21 21m-4-4l-4-4"></path></svg>
+                        <h2 class="text-3xl font-bold text-gray-100">
+                            <span class="tag tag-purple mr-2">Building</span>LangGraph란?
+                        </h2>
+                    </div>
+                    <p class="text-gray-300 mb-6">
+                        LangGraph는 LangChain 라이브러리를 확장하여, **상태를 가지는(stateful) 멀티-에이전트 애플리케이션**을 만들 수 있도록 돕는 도구입니다. 기존의 LangChain Expression Language (LCEL)이 DAG(방향성 비순환 그래프) 구조만 지원했던 한계를 넘어, **순환(cycle)을 포함한 복잡한 그래프**를 만들 수 있게 해줍니다.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-6 text-center">
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-purple-300 mb-2">상태 (State)</h3>
+                            <p class="text-sm text-gray-400">그래프의 모든 노드가 공유하는 중앙 데이터 저장소. 작업의 '중심 재료'입니다.</p>
+                        </div>
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-purple-300 mb-2">노드 (Node)</h3>
+                            <p class="text-sm text-gray-400">그래프의 각 작업 단위. '계란 풀기'와 같은 개별적인 함수나 LCEL 체인입니다.</p>
+                        </div>
+                        <div class="p-4 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-purple-300 mb-2">엣지 (Edge)</h3>
+                            <p class="text-sm text-gray-400">노드 간의 실행 흐름을 결정하는 규칙. 조건부로 다음 노드를 선택할 수 있습니다.</p>
+                        </div>
+                    </div>
+                     <p class="mt-6 text-gray-300">
+                        이 구조 덕분에 '인간의 피드백을 기다렸다가 다시 실행'하거나, '결과가 만족스러울 때까지 특정 단계를 반복'하는 등 훨씬 더 동적이고 지능적인 에이전트를 구축할 수 있습니다.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Comparison Section -->
+            <section id="comparison">
+                 <div class="card">
+                    <h2 class="text-3xl font-bold text-center mb-8 text-gray-100">
+                        <span class="gradient-text">LangSmith vs Langfuse</span>
+                    </h2>
+                    <p class="text-center text-gray-400 mb-8">LLM 애플리케이션의 실행 과정을 추적하고 분석하는 두 가지 강력한 관찰(Observability) 도구</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- LangSmith -->
+                        <div>
+                            <div class="flex items-center mb-3">
+                                <svg class="icon text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636l-1.414-1.414m15.556 15.556l-1.414-1.414M19.778 5.636l-1.414 1.414M4.222 19.778l-1.414-1.414"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                                <h3 class="text-2xl font-semibold text-gray-100">LangSmith</h3>
+                                <span class="tag tag-blue ml-auto">LangChain 공식</span>
+                            </div>
+                            <p class="text-gray-300">
+                                LangChain 프레임워크와 가장 긴밀하게 통합된 **공식 관찰 플랫폼**입니다. LangChain 사용자를 위해 설계되어 최소한의 설정으로 즉시 실행 추적, 디버깅, 평가가 가능합니다.
+                            </p>
+                            <ul class="mt-4 space-y-2 list-disc list-inside text-gray-300">
+                                <li><strong>강점:</strong> LangChain과의 완벽한 통합, 쉬운 설정, 강력한 디버깅 기능.</li>
+                                <li><strong>특징:</strong> 관리형 서비스(SaaS), 프롬프트 허브, 테스트 데이터셋 관리.</li>
+                                <li><strong>적합 대상:</strong> LangChain을 주력으로 사용하며 빠르고 쉬운 관찰 환경을 원하는 개발자.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Langfuse -->
+                        <div>
+                            <div class="flex items-center mb-3">
+                                <svg class="icon text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                <h3 class="text-2xl font-semibold text-gray-100">Langfuse</h3>
+                                <span class="tag tag-green ml-auto">오픈소스</span>
+                            </div>
+                            <p class="text-gray-300">
+                                **오픈소스 기반의 LLM 엔지니어링 플랫폼**으로, 특정 프레임워크에 종속되지 않습니다. 추적뿐만 아니라 상세한 분석, 비용 관리, 품질 평가 등 더 넓은 범위의 기능을 제공합니다.
+                            </p>
+                            <ul class="mt-4 space-y-2 list-disc list-inside text-gray-300">
+                                <li><strong>강점:</strong> 오픈소스(직접 호스팅 가능), 프레임워크 독립성, 상세한 비용 및 성능 분석.</li>
+                                <li><strong>특징:</strong> 직접 설치 또는 클라우드 버전 사용 가능, 사용자 피드백 수집, 정교한 대시보드.</li>
+                                <li><strong>적합 대상:</strong> 여러 프레임워크를 사용하거나, 데이터 소유권이 중요하며, 심층적인 분석 및 비용 관리가 필요한 팀.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Comparison Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead>
+                                <tr>
+                                    <th>구분</th>
+                                    <th>LangSmith</th>
+                                    <th>Langfuse</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="font-semibold text-gray-200">핵심 목표</td>
+                                    <td>LangChain 앱의 디버깅 및 추적</td>
+                                    <td>LLM 앱의 종합적인 관찰 및 분석</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-gray-200">라이선스</td>
+                                    <td>상용 (클로즈드 소스)</td>
+                                    <td>오픈소스 (MIT License)</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-gray-200">호스팅</td>
+                                    <td>관리형 SaaS</td>
+                                    <td>자체 호스팅(Self-hosting) 또는 관리형 클라우드</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-gray-200">프레임워크 통합</td>
+                                    <td>LangChain에 최적화</td>
+                                    <td>독립적 (Python, JS/TS SDK 제공)</td>
+                                </tr>
+                                 <tr>
+                                    <td class="font-semibold text-gray-200">주요 기능</td>
+                                    <td>실시간 추적, 프롬프트 디버깅, 테스트셋 평가, 프롬프트 허브</td>
+                                    <td>추적, 비용/성능 분석, 사용자 피드백, 데이터셋 관리, 정교한 필터링</td>
+                                </tr>
+                                <tr>
+                                    <td class="font-semibold text-gray-200">설정 난이도</td>
+                                    <td>매우 쉬움 (LangChain 사용자 기준)</td>
+                                    <td>쉬움 (데코레이터/콜백 핸들러 사용)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section id="conclusion">
+                <div class="card text-center">
+                    <h2 class="text-3xl font-bold mb-4 text-gray-100">결론: 어떤 도구를 선택해야 할까?</h2>
+                    <p class="text-gray-300 max-w-3xl mx-auto">
+                        세 도구는 서로 경쟁하는 관계가 아니라, LLM 애플리케이션 개발의 각기 다른 단계를 책임지는 상호 보완적인 관계입니다.
+                    </p>
+                    <div class="mt-8 grid md:grid-cols-3 gap-6">
+                        <div class="p-6 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-purple-300 mb-2">LangGraph</h3>
+                            <p class="text-gray-400">복잡하고 동적인 에이전트를 **구축(Build)**할 때 사용하세요.</p>
+                        </div>
+                        <div class="p-6 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-blue-300 mb-2">LangSmith</h3>
+                            <p class="text-gray-400">LangChain으로 만든 앱을 빠르고 쉽게 **추적하고 디버깅(Trace & Debug)**할 때 선택하세요.</p>
+                        </div>
+                        <div class="p-6 bg-gray-800 rounded-lg">
+                            <h3 class="text-xl font-semibold text-green-300 mb-2">Langfuse</h3>
+                            <p class="text-gray-400">앱의 성능, 비용, 품질을 심층적으로 **분석하고 관리(Analyze & Manage)**하고 싶을 때 최고의 선택입니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025 Peter Guide. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
