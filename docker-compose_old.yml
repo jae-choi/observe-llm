@@ -130,7 +130,10 @@ services:
       - ./langfuse-data/postgres:/var/lib/postgresql/data
 
   observe-llm:
-    image: peter99choi/observe-llm:latest
+    image: observe-llm
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     ports:
       - "8000:8000"

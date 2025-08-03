@@ -4,10 +4,10 @@ This project provides a ready-to-deploy AI agent built with LangGraph that demon
 
 > **Note: Project Maintainers**
 >
-> - **GitHub Repository (Source Code):** [github.com/jae-choi](https://github.com/jae-choi)
+> - **GitHub Repository (Source Code & Config):** [github.com/jae-choi/observe-llm](https://github.com/jae-choi/observe-llm)
 > - **Docker Hub Image (Pre-built Image):** [hub.docker.com/u/peter99choi](https://hub.docker.com/u/peter99choi)
 >
-> The source code is managed under the `jae-choi` GitHub account, and the official pre-built Docker images are distributed via the `peter99choi` Docker Hub account.
+> The source code is managed on GitHub, and the official pre-built Docker images are distributed via Docker Hub.
 
 ## ✨ Key Features
 
@@ -19,50 +19,50 @@ This project provides a ready-to-deploy AI agent built with LangGraph that demon
 
 ---
 
-## 🚀 Getting Started (with Source Code)
+## 🚀 Getting Started
 
-This section is for users who have the source code and want to run the complete application stack including Langfuse.
+This is the recommended method for all users. It runs the complete application stack by pulling pre-built images from Docker Hub.
 
 ### Prerequisites
 
-- [Git](https://git-scm.com/downloads)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) or [Podman](https://podman.io/getting-started/installation) installed and running.
-- If using Podman, you will also need `podman-compose`.
 
-> **Note for Apple Silicon (M1/M2/M3) Users:** The Docker images for some services (like `clickhouse`) may run under emulation and show performance warnings. This is expected and does not affect the functionality for local testing.
+### Step 1: Get the Configuration Files
 
-### Configuration
+Download or clone this GitHub repository to get the necessary configuration files.
+```bash
+git clone https://github.com/jae-choi/observe-llm.git
+cd observe-llm
+```
 
-1.  **Clone the Repository:**
+### Step 2: Configure API Keys
+
+1.  **Start Langfuse to Get Keys:**
+    Run the command below to start only the Langfuse service.
     ```bash
-    git clone https://github.com/jae-choi/observe-llm.git
-    cd observe-llm
+    docker compose up -d langfuse-web
     ```
+    Go to `http://localhost:3000`, sign up, create a new project, and copy the **Public Key** and **Secret Key** from the "API Keys" section.
 
-2.  **Create `.env` file:**
-    Copy the example environment file. This file will store your secret keys.
+2.  **Create and Edit `.env` file:**
+    Copy the example environment file.
     ```bash
     cp .env.example .env
     ```
+    Now, open the `.env` file and paste your **Google API Key**, and the **Langfuse Keys** you just copied. For any other secrets, you can leave the defaults for local testing but should change them for production.
 
-2.  **Edit `.env` file:**
-    Open the newly created `.env` file and fill in the required values for the agent and all backing services.
+### Step 3: Run the Full Application
 
-    > **⚠️ Important Security Note:** The default passwords in the `.env.example` file are for local development only. For any production or public-facing deployment, you **must** change these to strong, randomly generated passwords.
+Run the script for your operating system. This will download all required images and start the full application stack in the background.
 
-### Running the Application
-
-Open a terminal in the project's root directory and run the appropriate command for your environment:
-
-**Using Docker:**
-```bash
-docker compose up --build -d
-```
-
-**Using Podman:**
-```bash
-podman-compose up --build -d
-```
+-   **On macOS or Linux:**
+    ```bash
+    ./run.sh
+    ```
+-   **On Windows:**
+    ```bash
+    run.bat
+    ```
 
 ### Accessing the Services
 
@@ -70,65 +70,13 @@ podman-compose up --build -d
 - **Langfuse Dashboard:** [http://localhost:3000](http://localhost:3000)
 
 ### Stopping the Application
-
-- **Docker:** `docker compose down`
-- **Podman:** `podman-compose down`
-
----
-
-## 📖 Running the Standalone Agent Image
-
-This section is for advanced users who want to run only the agent's Docker image and connect it to a separate Langfuse instance. For most users, the `docker-compose` method above is recommended.
-
-### Step 1: Get the Docker Image
-
-**Option A: From Docker Hub**
-Replace `<username>` with the actual Docker Hub username.
 ```bash
-docker pull peter99choi/observe-llm:latest
+docker compose down
 ```
-
-**Option B: From a .tar file**
-If you received a `.tar` file, open a terminal in that folder and run:
-- **Docker:** `docker load -i observe-llm.tar`
-- **Podman:** `podman load -i observe-llm.tar`
-
-### Step 2: Run the Application Container
-
-Run the command below in your terminal. **Remember to replace the placeholder values** with your actual keys.
-
-**Using Docker:**
-```bash
-docker run -d -p 8000:8000 \
-  -e GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY" \
-  -e LANGFUSE_PUBLIC_KEY="YOUR_LANGFUSE_PUBLIC_KEY" \
-  -e LANGFUSE_SECRET_KEY="YOUR_LANGFUSE_SECRET_KEY" \
-  --name observe-llm-app \
-  peter99choi/observe-llm:latest
-```
-
-**Using Podman:**
-```bash
-podman run -d -p 8000:8000 \
-  -e GOOGLE_API_KEY="YOUR_GOOGLE_API_KEY" \
-  -e LANGFUSE_PUBLIC_KEY="YOUR_LANGFUSE_PUBLIC_KEY" \
-  -e LANGFUSE_SECRET_KEY="YOUR_LANGFUSE_SECRET_KEY" \
-  --name observe-llm-app \
-  peter99choi/observe-llm:latest
-```
-
-### Step 3: Access the Service
-
-Open your web browser and go to `http://localhost:8000`.
-
-### Step 4: Managing the Container
-
-- **Stop:** `docker stop observe-llm-app` or `podman stop observe-llm-app`
-- **Restart:** `docker start observe-llm-app` or `podman start observe-llm-app`
-- **Remove:** `docker rm observe-llm-app` or `podman rm observe-llm-app`
+> **Note:** This command stops and removes the containers, but your Langfuse data is safe. Because we configured local data persistence, all your data remains in the `langfuse-data` folder in your project directory.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/jae-choi/observe-llm/blob/main/LICENSE) file for details.
