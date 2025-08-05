@@ -22,6 +22,7 @@ This project provides a ready-to-deploy AI agent built with LangGraph that demon
 ## 🚀 Getting Started
 
 This is the recommended method for all users. It runs the complete application stack by pulling pre-built images from Docker Hub.
+[Intro WEB](https://jae-choi.github.io/news/observe-llm.html)
 
 ### Prerequisites
 
